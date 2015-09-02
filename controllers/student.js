@@ -1,52 +1,64 @@
-var db = require(__dirname + ' /../lib/mysql');
+var should = require('should-http'),
+	request = require('supertest');
+	request = require('should')
 
-exports.find = function(req, res, next){
-	db.query("SELECT * FROM student", function(err,rows){
-		if(err) return next(err);
-		res.send(rows); 
+describe('Student', function(){
+	var url = "http://localhost:5000";
+	
+	describe("find()", function(){
+		it('should retrieve all student record', function(done){
+			request(url)
+			.get('/students')
+			.end(function(err, res){
+				if(err) throw err;
+				res.should.have.status(200);
+				res.body.should.be.an.instanceOf(Array);
+				done();
+			});
+		});
+	});describe("find()", function(){
+		it('should retrieve all student record', function(done){
+			request(url)
+			.get('/students')
+			.end(function(err, res){
+				if(err) throw err;
+				res.should.have.status(200);
+				res.body.should.be.an.instanceOf(Array);
+				done();
+			});
+		});
 	});
-};
 
-exports.findOne = function(req, res, next){
-	db.query("SELECT * FROM student WHERE id=?", [req.params.id], function(err, rows){
-		if(err) return next(err);
-		if(rows.length===0){
-			res.status(404).send('Student not found.'); 
-		}
-		else{
-			res.send(rows[0]);
-		}
+	describe("findOne()", function(){
+		it('should retrieve a specific student record', function(done){
+			request(url)
+			.get('/students/1')
+			.end(function(err, res){
+				if(err) throw err;
+				res.should.have.status(200);
+				done();
+			});
+		});
 	});
-};
 
-exports.insert = function(req, res, next){
-	db.query("INSERT INTO student(studno, name) VALUES(?,?)", [req.body.studno, req.body.name], function(err,rows){
-		if(err) return next(err);
-		res.send(rows); 
+
+	describe("insert()", function(){
+		it('should be able to add a student and a student number', function(done){
+			request(url)
+			studrec = 
+			{
+				'name', 'Angelica',
+				'studNo', '2013-10457'
+			}
+			.post('/students')
+			.send(studrec)
+			.end(function(err, res){
+				if(err) throw err;
+				res.should.have.status(200);
+				studrec.res.should.have.property('name', 'Angelica')
+				studrec.res.should.have.property('studNo', '2013-10457')	
+				done();
+			});
+		});
 	});
-};
-
-
-exports.update = function(req, res, next){
-	db.query("UPDATE student SET ? WHERE id = ?", [req.body, req.params.id], function(err, rows){
-		if(err) return next(err);
-		if(rows.length===0){
-			res.status(404).send('Student not found.'); 
-		}
-		else{
-			res.send(rows[0]);
-		}
-	});
-};
-
-exports.remove = function(req, res, next){
-	db.query("DELETE from student WHERE id = ?", [req.params.id], function(err, rows){
-		if(err) return next(err);
-		if(rows.length===0){
-			res.status(404).send('Student not found.'); 
-		}
-		else{
-			res.send(rows[0]);
-		}
-	});
-};
+});
