@@ -1,15 +1,15 @@
 /*exports.find = function(req, res){
-	res.send('HELLO!');
+	res.send('HAI PIPZ!');
 };*/
 
-var db = require(__dirname + '/../lib/mysql');					
+var db = require(__dirname + '/../lib/mysql');					//connecting to database
 
 exports.find = function(req, res, next){
 	console.log(req.ip + "find()");
 
-	db.query("SELECT * FROM student", function(err, rows){	
-		if(err) return next(err);	
-		res.send(rows);		
+	db.query("SELECT * FROM student", function(err, rows){	//retrieving all student data
+		if(err) return next(err);	//skipping all the route handlers and send errors to client
+		res.send(rows);		//send retrieved rows 
 	});
 };
 
